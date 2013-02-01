@@ -19,12 +19,27 @@ function render(apps) {
     var h_name = '<h2>' + name + ' <span class="version">' + app.version + '</span><button id="a" value="lol" /></h2>';
     var p_desc = '<p class="description">' + app.description + logo + '</p>';
     var ul_war = render_list(warnings, 'color: #a00;');
+    if (ul_war == '') {
+      var war = '';
+    } else {
+      var war = '<p><strong>It can:</stron></p>' + ul_war;
+    }
     var ul_per = render_list(permissions, '');
-    var ul_hper = render_list(hostPermissions, '');
+    if (ul_per == '') {
+      var per = '<h3>Permissions:</h3><p>-</p>';
+    } else {
+      var per = '<h3>Permissions:</h3>' + ul_per;
+    }
+    var ul_hper = render_list(hostPermissions, '')
+    if (ul_hper == '') {
+      var hper = '<h3>Host Permissions:</h3><p>-</p>';
+    } else {
+      var hper = '<h3>Host Permissions:</h3>' + ul_hper;
+    }
     var store_url = 'https://chrome.google.com/webstore/detail/' + id;
     var store_link = '<a href="' + store_url + '">View in Web Store</a>'
     var bbar = '<p class="bottombar">' + store_link + ' application ID: ' + app.id + '</p>';
-    var sec_app = '<section class="app">' + h_name + p_desc + ul_war + ul_per + ul_hper + bbar + '</section>'
+    var sec_app = '<section class="app">' + h_name + p_desc + war + per + hper + bbar + '</section>'
     h_apps += sec_app;
   }
   h_apps += '</section>';
