@@ -1,0 +1,18 @@
+{
+  "manifest_version": 2,
+
+  "name": "Permission Viewer",
+  "description": "Review permissions of installed apps and extensions.",
+  "version": "1.0",
+  "app": {
+    "launch": {
+      "local_path": "main.html"
+    }
+  },
+  "permissions": [
+    "management"
+  ],
+  "icons": {
+    "128": "icon.png"
+  }
+}
