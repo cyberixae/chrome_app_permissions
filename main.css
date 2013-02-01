@@ -11,12 +11,16 @@ h1 {
 	font-weight: normal;
 }
 
-p.id {
+p.bottombar {
 	text-align: right;
 	padding: 0 0.7em;
 	margin-top: 0;
 	margin-bottom: 0.6em;
 	font-size: 0.9em;
+}
+
+p.bottombar a {
+	color: #007;
 }
 
 .version {

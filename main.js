@@ -15,13 +15,15 @@ function render(apps) {
     var warnings = app.warnings;
     var permissions = app.permissions;
     var hostPermissions = app.hostPermissions;
-    var h_name = '<h2>' + name + ' <span class="version">' + app.version + '</span></h2>';
-    var p_id = '<p class="id">id: ' + app.id + '</p>';
+    var h_name = '<h2>' + name + ' <span class="version">' + app.version + '</span><button id="a" value="lol" /></h2>';
     var p_desc = '<p class="description">' + app.description + '</p>';
     var ul_war = render_list(warnings, 'color: #a00;');
     var ul_per = render_list(permissions, '');
     var ul_hper = render_list(hostPermissions, '');
-    var sec_app = '<section class="app">' + h_name + p_desc + ul_war + ul_per + ul_hper + p_id + '</section>'
+    var store_url = 'https://chrome.google.com/webstore/detail/' + id;
+    var store_link = '<a href="' + store_url + '">View in Web Store</a>'
+    var bbar = '<p class="bottombar">' + store_link + ' application ID: ' + app.id + '</p>';
+    var sec_app = '<section class="app">' + h_name + p_desc + ul_war + ul_per + ul_hper + bbar + '</section>'
     h_apps += sec_app;
   }
   h_apps += '</section>';
