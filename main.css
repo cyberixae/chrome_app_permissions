@@ -1,0 +1,20 @@
+body {
+	font-family: sans-serif;
+}
+
+h3 {
+	margin: 1em auto 0 auto;
+}
+
+p.id {
+	margin-top: 0;
+	font-size: 0.8em;
+}
+
+.version {
+	font-size: 0.8em;
+}
+
+.description {
+	font-style: italic;
+}
