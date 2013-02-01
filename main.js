@@ -15,8 +15,9 @@ function render(apps) {
     var warnings = app.warnings;
     var permissions = app.permissions;
     var hostPermissions = app.hostPermissions;
+    var logo = '<img src="' + app.icon + '" width="48" style="float: right;" />';
     var h_name = '<h2>' + name + ' <span class="version">' + app.version + '</span><button id="a" value="lol" /></h2>';
-    var p_desc = '<p class="description">' + app.description + '</p>';
+    var p_desc = '<p class="description">' + app.description + logo + '</p>';
     var ul_war = render_list(warnings, 'color: #a00;');
     var ul_per = render_list(permissions, '');
     var ul_hper = render_list(hostPermissions, '');
@@ -64,6 +65,21 @@ function warnings_loaded(result) {
 
 }
 
+function select_icon(icons) {
+  urls = {}
+  for (var i in icons) {
+    var icon = icons[i];
+    urls[icon.size] = icon.url;
+  }
+  exact = urls[48];
+  if (typeof(exact) != typeof(undefined)) {
+    return exact;
+  }
+  sizes = Object.keys(urls);
+  m = Math.max.apply(Math, sizes);
+  return urls[m];
+}
+
 function load_warnings(ids, complete, i) {
   if (typeof(i) == typeof(undefined)) {
     i = ids.length - 1;
@@ -73,12 +89,17 @@ function load_warnings(ids, complete, i) {
       return
   }
   var info = ids[i];
+  if (info.type == 'theme') {
+      load_warnings(ids, complete, i - 1)
+      return;
+  }
   var id = info.id;
   function recurse(warnings) {
     app = {};
     app.id = id;
     app.warnings = warnings;
     app.name = info.name;
+    app.icon = select_icon(info.icons);
     app.version = info.version;
     app.description = info.description;
     app.permissions = info.permissions;
