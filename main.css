@@ -13,9 +13,10 @@ h1 {
 
 p.id {
 	text-align: right;
-	padding: 0 0.2em;
+	padding: 0 0.7em;
 	margin-top: 0;
-	font-size: 0.8em;
+	margin-bottom: 0.6em;
+	font-size: 0.9em;
 }
 
 .version {

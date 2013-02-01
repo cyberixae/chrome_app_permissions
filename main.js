@@ -21,7 +21,7 @@ function render(apps) {
     var ul_war = render_list(warnings, 'color: #a00;');
     var ul_per = render_list(permissions, '');
     var ul_hper = render_list(hostPermissions, '');
-    var sec_app = '<section class="app">' + h_name + p_id + p_desc + ul_war + ul_per + ul_hper + '</section>'
+    var sec_app = '<section class="app">' + h_name + p_desc + ul_war + ul_per + ul_hper + p_id + '</section>'
     h_apps += sec_app;
   }
   h_apps += '</section>';
