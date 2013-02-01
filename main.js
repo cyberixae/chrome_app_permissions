@@ -7,7 +7,7 @@ function render_list(items, style) {
 }
 
 function render(apps) {
-  var sec_apps = '<section>';
+  var h_apps = '';
   for(var i in apps) {
     var app = apps[i];
     var id = app.id;
@@ -15,17 +15,17 @@ function render(apps) {
     var warnings = app.warnings;
     var permissions = app.permissions;
     var hostPermissions = app.hostPermissions;
-    var h_name = '<h3>' + name + ' <span class="version">' + app.version + '</span></h3>';
+    var h_name = '<h2>' + name + ' <span class="version">' + app.version + '</span></h2>';
     var p_id = '<p class="id">id: ' + app.id + '</p>';
     var p_desc = '<p class="description">' + app.description + '</p>';
     var ul_war = render_list(warnings, 'color: #a00;');
     var ul_per = render_list(permissions, '');
     var ul_hper = render_list(hostPermissions, '');
-    var sec_app = '<section>' + h_name + p_id + p_desc + ul_war + ul_per + ul_hper + '</section>'
-    sec_apps += sec_app;
+    var sec_app = '<section class="app">' + h_name + p_id + p_desc + ul_war + ul_per + ul_hper + '</section>'
+    h_apps += sec_app;
   }
-  sec_apps += '</section>';
-  return sec_apps;
+  h_apps += '</section>';
+  return h_apps;
 }
 
 apps = {}
@@ -50,12 +50,12 @@ function warnings_loaded(result) {
     }
   }
 
-  h_app = '<h1>Application Permissions</h1>';
+  h_app = '<h1>Permission Viewer</h1>';
   sec_war = render(app_war);
   sec_per = render(app_per);
   sec_hos = render(app_hos);
   sec_bsc = render(app_bsc);
-  sec_main = '<section>' + sec_war + sec_per + sec_hos + sec_bsc + '</section>';
+  sec_main = '<section>' + h_app + sec_war + sec_per + sec_hos + sec_bsc + '</section>';
 
   var body = document.getElementsByTagName('body')[0];
   body.innerHTML = sec_main;

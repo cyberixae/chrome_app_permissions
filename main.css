@@ -1,12 +1,19 @@
 body {
 	font-family: sans-serif;
 }
-
-h3 {
-	margin: 1em auto 0 auto;
+h1 {
+	font-family: fantasy;
+	text-align: center;
+	font-size: 3em;
+	padding: 0;
+	margin: 0;
+	color: #444;
+	font-weight: normal;
 }
 
 p.id {
+	text-align: right;
+	padding: 0 0.2em;
 	margin-top: 0;
 	font-size: 0.8em;
 }
@@ -16,5 +23,23 @@ p.id {
 }
 
 .description {
+	padding: 0 1em;
 	font-style: italic;
 }
+
+.app h2 {
+	background-color: #ccc;
+	margin: 0;
+	padding: 0.2em;
+	border: thin solid #446;
+	border-width: 0 0 medium 0;
+}
+
+.app {
+	background-color: #eef;
+	margin: 1em;
+	padding: 0;
+	border: medium solid #aaa;
+	border-radius: 10px;
+}
+
