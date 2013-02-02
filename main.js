@@ -97,62 +97,60 @@ function render_app(app) {
 }
 
 function render_apps(apps) {
-  var h_apps = [];
+  var elements = [];
   for(var i in apps) {
     var app = apps[i];
-    var sec_app = render_app(app);
-    h_apps.push(sec_app);
+    var element = render_app(app);
+    elements.push(element);
   }
-  return h_apps;
+  return elements;
 }
 
 function order_apps_by_infos(apps) {
-  var app_war = {};
-  var app_per = {};
-  var app_hos = {};
-  var app_bsc = {};
-
+  var warnings = [];
+  var permissions = [];
+  var host_permissions = [];
+  var other = [];
   for(var i in apps) {
     var app = apps[i];
-    var id = app.id;
     if(app.warnings.length > 0) {
-      app_war[id] = app;
+      warnings.push(app);
     } else if(app.permissions.length > 0) {
-      app_per[id] = app;
+      permissions.push(app);
     } else if(app.hostPermissions.length > 0) {
-      app_hos[id] = app;
+      host_permissions.push(app);
     } else {
-      app_bsc[id] = app;
+      other.push(app);
     }
   }
-  var sec_war = render_apps(app_war);
-  var sec_per = render_apps(app_per);
-  var sec_hos = render_apps(app_hos);
-  var sec_bsc = render_apps(app_bsc);
-
-  var sec_apps = sec_war.concat(sec_per, sec_hos, sec_bsc);
-  return sec_apps;
+  var ordered = warnings.concat(permissions, host_permissions, other);
+  return ordered;
 }
 
-function warnings_loaded(apps) {
-
-  var sec_apps = order_apps_by_infos(apps);
-
-  var heading = document.createTextNode('Permission Viewer');
-  var h_app = document.createElement("h1");
-  h_app.appendChild(heading);
-
-  var sec_main = document.createElement("section");
-  sec_main.setAttribute('id', 'main');
-  sec_main.appendChild(h_app);
-  for (var i in sec_apps) {
-    var s = sec_apps[i];
-    sec_main.appendChild(s);
+function add_elements(target, items) {
+  for (var i in items) {
+    var item = items[i];
+    target.appendChild(item);
   }
-  
-  var old_main = document.getElementById('main');
-  document.body.replaceChild(sec_main, old_main);
+}
 
+function main_section(apps) {
+  var heading_text = document.createTextNode('Permission Viewer');
+  var heading = document.createElement("h1");
+  heading.appendChild(heading_text);
+  var main_section = document.createElement("section");
+  main_section.setAttribute('id', 'main');
+  main_section.appendChild(heading);
+  var ordered = order_apps_by_infos(apps);
+  var rendered = render_apps(ordered)
+  add_elements(main_section, rendered);
+  return main_section;
+}
+
+function redraw_page(apps) {
+  var new_main = main_section(apps);
+  var old_main = document.getElementById('main');
+  document.body.replaceChild(new_main, old_main);
 }
 
 function select_icon(icons) {
@@ -219,7 +217,7 @@ function remove_themes(infos) {
 function update_app_data(infos) {
   var apps = {}
   function continuation() {
-    warnings_loaded(apps);
+    redraw_page(apps);
   }
   var app_infos = remove_themes(infos);
   collect_app_data(app_infos, apps, continuation);
