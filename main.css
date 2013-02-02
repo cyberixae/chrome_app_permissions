@@ -97,4 +97,16 @@ a {
 .disabled {
 	opacity: 0.3;
 }
+.app a.enable {
+	text-decoration: none;
+}
+.app a.disable {
+	text-decoration: underline;
+}
+.disabled a.enable {
+	text-decoration: underline;
+}
+.disabled a.disable {
+	text-decoration: none;
+}
 

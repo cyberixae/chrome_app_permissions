@@ -93,8 +93,8 @@ function app_description(description, icon_url) {
   return table;
 }
 
-function app_classes(app) {
-  if (app.enabled) {
+function app_classes(enabled) {
+  if (enabled) {
     var classes = 'app';
   } else {
     var classes = 'app disabled';
@@ -109,10 +109,11 @@ function render_app(app) {
   var permissions = permission_view(app.permissions, 'Permissions', '');
   var host_permissions = permission_view(app.hostPermissions, 'Host Permissions', '');
   var bar = option_bar(app);
-  var classes = app_classes(app);
+  var classes = app_classes(app.enabled);
   var element = document.createElement("section");
   element.setAttribute('class', classes);
-  element.setAttribute('id', 'app-' + app.id);
+  var element_id = app_element_id(app.id)
+  element.setAttribute('id', element_id);
   element.appendChild(heading);
   element.appendChild(description);
   element.appendChild(warnings);
@@ -122,19 +123,24 @@ function render_app(app) {
   return element;
 }
 
+function enable_toggle(id) {
+  var enable = enable_link(id);
+  var disable = disable_link(id);
+  var toggle = document.createElement("span");
+  toggle.appendChild(enable)
+  toggle.appendChild(disable)
+  return toggle;
+}
+
 function option_bar(app) {
   var id = app.id;
-  var store = store_link(id);
   var uninstall = uninstall_link(id);
-  if (app.enabled) {
-    var enable_disable = disable_link(id);
-  } else {
-    var enable_disable = enable_link(id);
-  }
+  var toggle = enable_toggle(id);
+  var store = store_link(id);
   var bar = document.createElement("p");
   bar.setAttribute('class', 'bottombar');
   bar.appendChild(uninstall);
-  bar.appendChild(enable_disable);
+  bar.appendChild(toggle);
   bar.appendChild(store);
   return bar;
 }
@@ -266,8 +272,22 @@ function update_app_data(infos) {
   collect_app_data(app_infos, apps, continuation);
 }
 
+function enabled_update(info) {
+  var id = info.id;
+  var element_id = app_element_id(id)
+  var element = document.getElementById(element_id);
+  var classes = app_classes(info.enabled);
+  element.setAttribute('class', classes);
+}
+
+function app_element_id(app_id) {
+  var element_id = 'app-' + app_id;
+  return element_id;
+}
+
 function remove_app_element(id) {
-  var obsolete = document.getElementById('app-' + id);
+  var element_id = app_element_id(id)
+  var obsolete = document.getElementById(element_id);
   if (typeof(obsolete) == typeof(undefined)) {
     return;
   }
@@ -281,6 +301,8 @@ function refresh_page() {
 window.onload = function() {
   chrome.management.onUninstalled.addListener(remove_app_element);
   chrome.management.onInstalled.addListener(refresh_page);
+  chrome.management.onEnabled.addListener(enabled_update);
+  chrome.management.onDisabled.addListener(enabled_update);
   refresh_page();
 }
 
