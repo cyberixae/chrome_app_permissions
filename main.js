@@ -7,7 +7,7 @@ function render_list(items, style) {
 }
 
 function render(apps) {
-  var h_apps = '';
+  var h_apps = [];
   for(var i in apps) {
     var app = apps[i];
     var id = app.id;
@@ -16,33 +16,36 @@ function render(apps) {
     var permissions = app.permissions;
     var hostPermissions = app.hostPermissions;
     var logo = '<img src="' + app.icon + '" width="48" style="float: right;" />';
-    var h_name = '<h2>' + name + ' <span class="version">' + app.version + '</span><button id="a" value="lol" /></h2>';
+    var h_name = '<h2>' + name + ' <span class="version">' + app.version + '</span></h2>';
     var p_desc = '<p class="description">' + app.description + logo + '</p>';
     var ul_war = render_list(warnings, 'color: #a00;');
     if (ul_war == '') {
       var war = '';
     } else {
-      var war = '<p><strong>It can:</stron></p>' + ul_war;
+      var war = '<p class="itcan">It can:</p>' + ul_war;
     }
     var ul_per = render_list(permissions, '');
     if (ul_per == '') {
-      var per = '<h3>Permissions:</h3><p>-</p>';
+      var per = '';
     } else {
       var per = '<h3>Permissions:</h3>' + ul_per;
     }
     var ul_hper = render_list(hostPermissions, '')
     if (ul_hper == '') {
-      var hper = '<h3>Host Permissions:</h3><p>-</p>';
+      var hper = '';
     } else {
       var hper = '<h3>Host Permissions:</h3>' + ul_hper;
     }
     var store_url = 'https://chrome.google.com/webstore/detail/' + id;
-    var store_link = '<a href="' + store_url + '">View in Web Store</a>'
-    var bbar = '<p class="bottombar">' + store_link + ' application ID: ' + app.id + '</p>';
-    var sec_app = '<section class="app">' + h_name + p_desc + war + per + hper + bbar + '</section>'
-    h_apps += sec_app;
+    var store_link = '<a href="' + store_url + '">Show Web Store page</a>'
+    var uninstall_link = '<a id="123" href="">Uninstall</a>'
+    var bbar = '<p class="bottombar"><span style="float: left;">' + uninstall_link +' ' + store_link + '</span> application ID: ' + app.id + '</p>';
+
+    var sec_app = document.createElement("section");
+    sec_app.setAttribute('class', 'app');
+    sec_app.innerHTML = h_name + p_desc + war + per + hper + bbar
+    h_apps.push(sec_app);
   }
-  h_apps += '</section>';
   return h_apps;
 }
 
@@ -68,15 +71,25 @@ function warnings_loaded(result) {
     }
   }
 
-  h_app = '<h1>Permission Viewer</h1>';
+  heading = document.createTextNode('Permission Viewer');
+  h_app = document.createElement("h1");
+  h_app.appendChild(heading);
   sec_war = render(app_war);
   sec_per = render(app_per);
   sec_hos = render(app_hos);
   sec_bsc = render(app_bsc);
-  sec_main = '<section>' + h_app + sec_war + sec_per + sec_hos + sec_bsc + '</section>';
 
+  sec_apps = sec_war.concat(sec_per, sec_hos, sec_bsc);
+
+  sec_main = document.createElement("section");
+  sec_main.appendChild(h_app);
+  for (var i in sec_apps) {
+    var s = sec_apps[i];
+    sec_main.appendChild(s);
+  }
+  
   var body = document.getElementsByTagName('body')[0];
-  body.innerHTML = sec_main;
+  body.appendChild(sec_main);
 
 }
 
