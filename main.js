@@ -170,48 +170,48 @@ function select_icon(icons) {
   return urls[m];
 }
 
-function load_warnings(ids, apps, complete, i) {
-  if (typeof(i) == typeof(undefined)) {
-    i = ids.length - 1;
+function collect_app_data(ids, apps, complete) {
+  function _collect_app_data(ids, apps, complete, i) {
+    if (i < 0) {
+        complete();
+        return
+    }
+    var info = ids[i];
+    if (info.type == 'theme') {
+        _collect_app_data(ids, apps, complete, i - 1)
+        return;
+    }
+    var id = info.id;
+    function recurse(warnings) {
+      var app = {};
+      app.id = id;
+      app.warnings = warnings;
+      app.name = info.name;
+      app.icon = select_icon(info.icons);
+      app.enabled = info.enabled;
+      app.version = info.version;
+      app.description = info.description;
+      app.permissions = info.permissions;
+      app.hostPermissions = info.hostPermissions;
+      apps[id] = app;
+      _collect_app_data(ids, apps, complete, i - 1)
+    }
+    chrome.management.getPermissionWarningsById(id, recurse);
   }
-  if (i < 0) {
-      complete();
-      return
-  }
-  var info = ids[i];
-  if (info.type == 'theme') {
-      load_warnings(ids, apps, complete, i - 1)
-      return;
-  }
-  var id = info.id;
-  function recurse(warnings) {
-    var app = {};
-    app.id = id;
-    app.warnings = warnings;
-    app.name = info.name;
-    app.icon = select_icon(info.icons);
-    app.enabled = info.enabled;
-    app.version = info.version;
-    app.description = info.description;
-    app.permissions = info.permissions;
-    app.hostPermissions = info.hostPermissions;
-    apps[id] = app;
-    load_warnings(ids, apps, complete, i - 1)
-  }
-  chrome.management.getPermissionWarningsById(id, recurse);
-
+  var last_index = ids.length - 1;
+  return _collect_app_data(ids, apps, complete, last_index);
 }
 
-function infos(result) {
+function update_app_data(app_infos) {
   var apps = {}
   function continuation() {
     warnings_loaded(apps);
   }
-  load_warnings(result, apps, continuation);
+  collect_app_data(app_infos, apps, continuation);
 }
 
 function refresh() {
-  chrome.management.getAll(infos)
+  chrome.management.getAll(update_app_data)
 }
 
 window.onload = function() {
