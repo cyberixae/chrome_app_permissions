@@ -86,10 +86,20 @@ function app_heading(name, version) {
 }
 
 function app_description(description, icon_url) {
+  var logo = document.createElement("img");
+  logo.setAttribute('src', icon_url);
+  logo.setAttribute('alt', '');
+  var logo_cell = document.createElement("td");
+  logo_cell.appendChild(logo);
+  var description_text = document.createTextNode(description);
+  var description_cell = document.createElement("td");
+  description_cell.appendChild(description_text);
+  var row = document.createElement("tr");
+  row.appendChild(description_cell);
+  row.appendChild(logo_cell);
   var table = document.createElement("table");
   table.setAttribute('class', 'description');
-  var logo = '<img src="' + icon_url + '" width="48" style="float: right;" />';
-  table.innerHTML = '<tr><td>' + description + '</td><td>' + logo + '</td></tr>';
+  table.appendChild(row);
   return table;
 }
 
