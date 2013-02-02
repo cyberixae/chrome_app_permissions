@@ -82,8 +82,10 @@ ul {
 	margin: 0 auto 1em auto;
 }
 
-img {
+.app img {
 	opacity: 0.7;
+	width: 48px;
+	float: right;
 }
 
 a {
