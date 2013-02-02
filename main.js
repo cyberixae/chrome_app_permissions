@@ -83,11 +83,6 @@ function render(apps) {
     bbar.setAttribute('class', 'bottombar');
     bbar.appendChild(uninstall);
     bbar.appendChild(store);
-    var id_text = document.createTextNode(' application ID: ' + app.id);
-    var id_field = document.createElement("span");
-    id_field.setAttribute('class', 'idfield');
-    id_field.appendChild(id_text);
-    bbar.appendChild(id_field);
 
     var sec_app = document.createElement("section");
     sec_app.setAttribute('class', 'app');
