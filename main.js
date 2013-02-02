@@ -9,6 +9,9 @@ function render_list(items, style) {
 
 function remove(id) {
   var obsolete = document.getElementById('app-' + id);
+  if (typeof(obsolete) == typeof(undefined)) {
+    return;
+  }
   obsolete.parentNode.removeChild(obsolete);
 
 }
@@ -124,15 +127,15 @@ function warnings_loaded(result) {
   sec_apps = sec_war.concat(sec_per, sec_hos, sec_bsc);
 
   sec_main = document.createElement("section");
+  sec_main.setAttribute('id', 'main');
   sec_main.appendChild(h_app);
   for (var i in sec_apps) {
     var s = sec_apps[i];
     sec_main.appendChild(s);
   }
   
-  var body = document.getElementsByTagName('body')[0];
-  body.appendChild(sec_main);
-  chrome.management.onUninstalled.addListener(remove);
+  var old_main = document.getElementById('main');
+  document.body.replaceChild(sec_main, old_main);
 
 }
 
@@ -188,7 +191,14 @@ function infos(result) {
   }
   load_warnings(result, continuation);
 }
-window.onload = function() {
+
+function refresh() {
   chrome.management.getAll(infos)
+}
+
+window.onload = function() {
+  chrome.management.onUninstalled.addListener(remove);
+  chrome.management.onInstalled.addListener(refresh);
+  refresh();
 }
 
