@@ -170,43 +170,58 @@ function select_icon(icons) {
   return urls[m];
 }
 
-function collect_app_data(ids, apps, complete) {
-  function _collect_app_data(ids, apps, complete, i) {
-    if (i < 0) {
-        complete();
-        return
-    }
-    var info = ids[i];
-    if (info.type == 'theme') {
-        _collect_app_data(ids, apps, complete, i - 1)
-        return;
-    }
-    var id = info.id;
-    function recurse(warnings) {
-      var app = {};
-      app.id = id;
-      app.warnings = warnings;
-      app.name = info.name;
-      app.icon = select_icon(info.icons);
-      app.enabled = info.enabled;
-      app.version = info.version;
-      app.description = info.description;
-      app.permissions = info.permissions;
-      app.hostPermissions = info.hostPermissions;
-      apps[id] = app;
-      _collect_app_data(ids, apps, complete, i - 1)
-    }
-    chrome.management.getPermissionWarningsById(id, recurse);
-  }
-  var last_index = ids.length - 1;
-  return _collect_app_data(ids, apps, complete, last_index);
+function app_from_info(info) {
+  var app = {};
+  app.id = info.id;
+  app.name = info.name;
+  app.icon = select_icon(info.icons);
+  app.enabled = info.enabled;
+  app.version = info.version;
+  app.description = info.description;
+  app.permissions = info.permissions;
+  app.hostPermissions = info.hostPermissions;
+  return app;
 }
 
-function update_app_data(app_infos) {
+/* Recursion was used to avoid synchronization problems.
+ * API documentation hinted that getPermissionWarningsById
+ * would also return the result, but that was not the case.
+ */
+function collect_app_data(app_infos, apps, complete) {
+  function _collect_app_data(app_infos, apps, complete, i) {
+    if (i < 0) {
+      complete();
+      return;
+    }
+    var info = app_infos[i];
+    var id = info.id;
+    var app = app_from_info(info);
+    function add_warnings(warnings) {
+      app.warnings = warnings;
+      _collect_app_data(app_infos, apps, complete, i - 1);
+    }
+    apps[id] = app;
+    chrome.management.getPermissionWarningsById(id, add_warnings);
+  }
+  var last_index = app_infos.length - 1;
+  _collect_app_data(app_infos, apps, complete, last_index);
+}
+
+function remove_themes(infos) {
+  function not_theme(info) {
+    var is_theme = info.type == 'theme';
+    return !is_theme
+  }
+  var app_infos = infos.filter(not_theme)
+  return app_infos;
+}
+
+function update_app_data(infos) {
   var apps = {}
   function continuation() {
     warnings_loaded(apps);
   }
+  var app_infos = remove_themes(infos);
   collect_app_data(app_infos, apps, continuation);
 }
 
