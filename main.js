@@ -6,22 +6,31 @@ function render_list(items, style) {
   return '';
 }
 
-function get_deleted_cb(id) {
-  return function() {
-    var obsolete = document.getElementById('app-' + id);
-    obsolete.parentNode.removeChild(obsolete);
-  }
+
+function remove(id) {
+  var obsolete = document.getElementById('app-' + id);
+  obsolete.parentNode.removeChild(obsolete);
+
 }
 
 function get_delete_cb(id) {
   return function(event) {
     try {
-    chrome.management.uninstall(id, {"showConfirmDialog": true}, get_deleted_cb(id));
+    chrome.management.uninstall(id, {"showConfirmDialog": true});
     } catch(e) {
       console.log(e);
     }
     event.preventDefault();
   }
+}
+
+function uninstall_link(id) {
+    var link_text = document.createTextNode('Uninstall');
+    var uninstall_link = document.createElement('a');
+    uninstall_link.setAttribute('href', '#');
+    uninstall_link.appendChild(link_text);
+    uninstall_link.addEventListener('click', get_delete_cb(id));
+    return uninstall_link;
 }
 
 function render(apps) {
@@ -60,14 +69,11 @@ function render(apps) {
     store_link.setAttribute('href', store_url);
     store_link.appendChild(store_text);
 
-    var link_text = document.createTextNode('Uninstall');
-    var uninstall_link = document.createElement('a');
-    uninstall_link.setAttribute('href', '#');
-    uninstall_link.appendChild(link_text);
+    var uninstall = uninstall_link(id);
 
     var bbar = document.createElement("p");
     bbar.setAttribute('class', 'bottombar');
-    bbar.appendChild(uninstall_link);
+    bbar.appendChild(uninstall);
     bbar.appendChild(store_link);
     var id_text = document.createTextNode(' application ID: ' + app.id);
     var id_field = document.createElement("span");
@@ -75,7 +81,6 @@ function render(apps) {
     id_field.appendChild(id_text);
     bbar.appendChild(id_field);
 
-    uninstall_link.addEventListener('click', get_delete_cb(id));
     var sec_app = document.createElement("section");
     sec_app.setAttribute('class', 'app');
     sec_app.setAttribute('id', 'app-' + id);
@@ -127,6 +132,7 @@ function warnings_loaded(result) {
   
   var body = document.getElementsByTagName('body')[0];
   body.appendChild(sec_main);
+  chrome.management.onUninstalled.addListener(remove);
 
 }
 
