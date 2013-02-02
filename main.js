@@ -6,10 +6,17 @@ function render_list(items, style) {
   return '';
 }
 
+function get_deleted_cb(id) {
+  return function() {
+    var obsolete = document.getElementById('app-' + id);
+    obsolete.parentNode.removeChild(obsolete);
+  }
+}
+
 function get_delete_cb(id) {
   return function(event) {
     try {
-    chrome.management.uninstall(id, {"showConfirmDialog": true});
+    chrome.management.uninstall(id, {"showConfirmDialog": true}, get_deleted_cb(id));
     } catch(e) {
       console.log(e);
     }
@@ -71,6 +78,7 @@ function render(apps) {
     uninstall_link.addEventListener('click', get_delete_cb(id));
     var sec_app = document.createElement("section");
     sec_app.setAttribute('class', 'app');
+    sec_app.setAttribute('id', 'app-' + id);
     sec_app.innerHTML = h_name + p_desc + war + per + hper;
     sec_app.appendChild(bbar);
     h_apps.push(sec_app);
