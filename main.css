@@ -45,14 +45,25 @@ p.bottombar a {
 	border-radius: 10px;
 }
 
-.app p.description {
+.app table.description {
 	padding: 0 1em;
+	margin: 1em 0 0 0 ;
 	font-style: italic;
+	width: 100%;
+}
+
+td {
+	vertical-align: top;
+}
+
+.description p {
+	margin-right: 58px;
 }
 
 .app p.itcan {
 	padding: 1em 1em 0 1em;
 	margin-bottom: 0.2em;
+	margin-top: 0;
 	font-weight: bold;
 }
 
@@ -69,7 +80,6 @@ ul {
 
 img {
 	opacity: 0.7;
-	margin-bottom: 1em;
 }
 
 a {

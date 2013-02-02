@@ -36,6 +36,15 @@ function uninstall_link(id) {
     return uninstall_link;
 }
 
+function store_link(id) {
+  var store_text = document.createTextNode('Show Web Store page');
+  var store_url = 'https://chrome.google.com/webstore/detail/' + id;
+  var store_link = document.createElement('a');
+  store_link.setAttribute('href', store_url);
+  store_link.appendChild(store_text);
+  return store_link;
+}
+
 function render(apps) {
   var h_apps = [];
   for(var i in apps) {
@@ -47,7 +56,7 @@ function render(apps) {
     var hostPermissions = app.hostPermissions;
     var logo = '<img src="' + app.icon + '" width="48" style="float: right;" />';
     var h_name = '<h2>' + name + ' <span class="version">' + app.version + '</span></h2>';
-    var p_desc = '<p class="description">' + app.description + logo + '</p>';
+    var p_desc = '<table class="description"><tr><td>' + app.description + '</td><td>' + logo + '</td></tr></table>';
     var ul_war = render_list(warnings, 'color: #a00;');
     if (ul_war == '') {
       var war = '';
@@ -66,18 +75,14 @@ function render(apps) {
     } else {
       var hper = '<h3>Host Permissions:</h3>' + ul_hper;
     }
-    var store_text = document.createTextNode('Show Web Store page');
-    var store_url = 'https://chrome.google.com/webstore/detail/' + id;
-    var store_link = document.createElement('a');
-    store_link.setAttribute('href', store_url);
-    store_link.appendChild(store_text);
 
+    var store = store_link(id);
     var uninstall = uninstall_link(id);
 
     var bbar = document.createElement("p");
     bbar.setAttribute('class', 'bottombar');
     bbar.appendChild(uninstall);
-    bbar.appendChild(store_link);
+    bbar.appendChild(store);
     var id_text = document.createTextNode(' application ID: ' + app.id);
     var id_field = document.createElement("span");
     id_field.setAttribute('class', 'idfield');
