@@ -38,6 +38,7 @@ p.bottombar a {
 
 
 .app {
+	opacity: 0.3;
 	background-color: #eef;
 	margin: 1em;
 	padding: 0;
@@ -88,4 +89,8 @@ a {
 
 .idfield {
 	float: right;
+}
+
+.enabled {
+	opacity: 1;
 }

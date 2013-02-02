@@ -1,3 +1,4 @@
+"use strict";
 
 function render_list(items, style) {
   if (items.length > 0) {
@@ -45,58 +46,67 @@ function store_link(id) {
   return store_link;
 }
 
-function render(apps) {
+function render_app(app) {
+  var id = app.id;
+  var name = app.name;
+  var warnings = app.warnings;
+  var permissions = app.permissions;
+  var hostPermissions = app.hostPermissions;
+  var logo = '<img src="' + app.icon + '" width="48" style="float: right;" />';
+  var h_name = '<h2>' + name + ' <span class="version">' + app.version + '</span></h2>';
+  var p_desc = '<table class="description"><tr><td>' + app.description + '</td><td>' + logo + '</td></tr></table>';
+  var ul_war = render_list(warnings, 'color: #a00;');
+  if (ul_war == '') {
+    var war = '';
+  } else {
+    var war = '<p class="itcan">It can:</p>' + ul_war;
+  }
+  var ul_per = render_list(permissions, '');
+  if (ul_per == '') {
+    var per = '';
+  } else {
+    var per = '<h3>Permissions:</h3>' + ul_per;
+  }
+  var ul_hper = render_list(hostPermissions, '')
+  if (ul_hper == '') {
+    var hper = '';
+  } else {
+    var hper = '<h3>Host Permissions:</h3>' + ul_hper;
+  }
+
+  var store = store_link(id);
+  var uninstall = uninstall_link(id);
+
+  var bbar = document.createElement("p");
+  bbar.setAttribute('class', 'bottombar');
+  bbar.appendChild(uninstall);
+  bbar.appendChild(store);
+
+  var sec_app = document.createElement("section");
+  if (app.enabled) {
+    var classes = 'app enabled';
+  } else {
+    var classes = 'app';
+  }
+  sec_app.setAttribute('class', classes);
+  sec_app.setAttribute('id', 'app-' + id);
+  sec_app.innerHTML = h_name + p_desc + war + per + hper;
+  sec_app.appendChild(bbar);
+
+  return sec_app;
+}
+
+function render_apps(apps) {
   var h_apps = [];
   for(var i in apps) {
     var app = apps[i];
-    var id = app.id;
-    var name = app.name;
-    var warnings = app.warnings;
-    var permissions = app.permissions;
-    var hostPermissions = app.hostPermissions;
-    var logo = '<img src="' + app.icon + '" width="48" style="float: right;" />';
-    var h_name = '<h2>' + name + ' <span class="version">' + app.version + '</span></h2>';
-    var p_desc = '<table class="description"><tr><td>' + app.description + '</td><td>' + logo + '</td></tr></table>';
-    var ul_war = render_list(warnings, 'color: #a00;');
-    if (ul_war == '') {
-      var war = '';
-    } else {
-      var war = '<p class="itcan">It can:</p>' + ul_war;
-    }
-    var ul_per = render_list(permissions, '');
-    if (ul_per == '') {
-      var per = '';
-    } else {
-      var per = '<h3>Permissions:</h3>' + ul_per;
-    }
-    var ul_hper = render_list(hostPermissions, '')
-    if (ul_hper == '') {
-      var hper = '';
-    } else {
-      var hper = '<h3>Host Permissions:</h3>' + ul_hper;
-    }
-
-    var store = store_link(id);
-    var uninstall = uninstall_link(id);
-
-    var bbar = document.createElement("p");
-    bbar.setAttribute('class', 'bottombar');
-    bbar.appendChild(uninstall);
-    bbar.appendChild(store);
-
-    var sec_app = document.createElement("section");
-    sec_app.setAttribute('class', 'app');
-    sec_app.setAttribute('id', 'app-' + id);
-    sec_app.innerHTML = h_name + p_desc + war + per + hper;
-    sec_app.appendChild(bbar);
+    var sec_app = render_app(app);
     h_apps.push(sec_app);
   }
   return h_apps;
 }
 
-apps = {}
-
-function warnings_loaded(result) {
+function order_apps_by_infos(apps) {
   var app_war = {};
   var app_per = {};
   var app_hos = {};
@@ -115,18 +125,24 @@ function warnings_loaded(result) {
       app_bsc[id] = app;
     }
   }
+  var sec_war = render_apps(app_war);
+  var sec_per = render_apps(app_per);
+  var sec_hos = render_apps(app_hos);
+  var sec_bsc = render_apps(app_bsc);
 
-  heading = document.createTextNode('Permission Viewer');
-  h_app = document.createElement("h1");
+  var sec_apps = sec_war.concat(sec_per, sec_hos, sec_bsc);
+  return sec_apps;
+}
+
+function warnings_loaded(apps) {
+
+  var sec_apps = order_apps_by_infos(apps);
+
+  var heading = document.createTextNode('Permission Viewer');
+  var h_app = document.createElement("h1");
   h_app.appendChild(heading);
-  sec_war = render(app_war);
-  sec_per = render(app_per);
-  sec_hos = render(app_hos);
-  sec_bsc = render(app_bsc);
 
-  sec_apps = sec_war.concat(sec_per, sec_hos, sec_bsc);
-
-  sec_main = document.createElement("section");
+  var sec_main = document.createElement("section");
   sec_main.setAttribute('id', 'main');
   sec_main.appendChild(h_app);
   for (var i in sec_apps) {
@@ -140,21 +156,21 @@ function warnings_loaded(result) {
 }
 
 function select_icon(icons) {
-  urls = {}
+  var urls = {}
   for (var i in icons) {
     var icon = icons[i];
     urls[icon.size] = icon.url;
   }
-  exact = urls[48];
+  var exact = urls[48];
   if (typeof(exact) != typeof(undefined)) {
     return exact;
   }
-  sizes = Object.keys(urls);
-  m = Math.max.apply(Math, sizes);
+  var sizes = Object.keys(urls);
+  var m = Math.max.apply(Math, sizes);
   return urls[m];
 }
 
-function load_warnings(ids, complete, i) {
+function load_warnings(ids, apps, complete, i) {
   if (typeof(i) == typeof(undefined)) {
     i = ids.length - 1;
   }
@@ -164,32 +180,34 @@ function load_warnings(ids, complete, i) {
   }
   var info = ids[i];
   if (info.type == 'theme') {
-      load_warnings(ids, complete, i - 1)
+      load_warnings(ids, apps, complete, i - 1)
       return;
   }
   var id = info.id;
   function recurse(warnings) {
-    app = {};
+    var app = {};
     app.id = id;
     app.warnings = warnings;
     app.name = info.name;
     app.icon = select_icon(info.icons);
+    app.enabled = info.enabled;
     app.version = info.version;
     app.description = info.description;
     app.permissions = info.permissions;
     app.hostPermissions = info.hostPermissions;
     apps[id] = app;
-    load_warnings(ids, complete, i - 1)
+    load_warnings(ids, apps, complete, i - 1)
   }
   chrome.management.getPermissionWarningsById(id, recurse);
 
 }
 
 function infos(result) {
+  var apps = {}
   function continuation() {
-    warnings_loaded(result);
+    warnings_loaded(apps);
   }
-  load_warnings(result, continuation);
+  load_warnings(result, apps, continuation);
 }
 
 function refresh() {
