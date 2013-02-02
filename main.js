@@ -61,7 +61,13 @@ function store_link(id) {
 
 function render_list(items) {
   var ul = document.createElement('ul');
-  ul.innerHTML = '<li>' + items.join('</li><li>') + '</li>';
+  for (var i in items) {
+    var item = items[i];
+    var li_text = document.createTextNode(item);
+    var li = document.createElement('li');
+    li.appendChild(li_text);
+    ul.appendChild(li);
+  }
   return ul;
 }
 
