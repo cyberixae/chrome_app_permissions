@@ -61,11 +61,15 @@ td {
 	margin-right: 58px;
 }
 
-.app p.itcan {
+.app p.list_head {
 	padding: 1em 1em 0 1em;
 	margin-bottom: 0.2em;
 	margin-top: 0;
 	font-weight: bold;
+}
+
+.itcan {
+       color: #a00;
 }
 
 h3 {
