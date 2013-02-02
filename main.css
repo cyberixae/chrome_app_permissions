@@ -38,7 +38,6 @@ p.bottombar a {
 
 
 .app {
-	opacity: 0.3;
 	background-color: #eef;
 	margin: 1em;
 	padding: 0;
@@ -95,6 +94,7 @@ a {
 	float: right;
 }
 
-.enabled {
-	opacity: 1;
+.disabled {
+	opacity: 0.3;
 }
+

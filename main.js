@@ -65,9 +65,9 @@ function app_description(description, icon_url) {
 
 function app_classes(app) {
   if (app.enabled) {
-    var classes = 'app enabled';
-  } else {
     var classes = 'app';
+  } else {
+    var classes = 'app disabled';
   }
   return classes;
 }
