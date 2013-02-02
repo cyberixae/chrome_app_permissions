@@ -174,7 +174,7 @@ function option_bar(app) {
 
 function render_apps(apps) {
   var elements = [];
-  for(var i in apps) {
+  for (var i in apps) {
     var app = apps[i];
     var element = render_app(app);
     elements.push(element);
@@ -187,7 +187,7 @@ function order_apps_by_infos(apps) {
   var permissions = [];
   var host_permissions = [];
   var other = [];
-  for(var i in apps) {
+  for (var i in apps) {
     var app = apps[i];
     if(app.warnings.length > 0) {
       warnings.push(app);
