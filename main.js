@@ -1,8 +1,8 @@
-"use strict";
+'use strict';
 
 function get_delete_cb(id) {
   return function(event) {
-    chrome.management.uninstall(id, {"showConfirmDialog": true});
+    chrome.management.uninstall(id, {'showConfirmDialog': true});
     event.preventDefault();
   }
 }
@@ -72,7 +72,7 @@ function permission_view(warnings, heading, class_name) {
     var empty = document.createTextNode('');
     return empty;
   } else {
-    var war = document.createElement("div");
+    var war = document.createElement('div');
     war.setAttribute('class', class_name);
     war.innerHTML = '<p class="list_head">' + heading + ':</p>' + ul_war;
     return war;
@@ -80,24 +80,24 @@ function permission_view(warnings, heading, class_name) {
 }
 
 function app_heading(name, version) {
-  var heading = document.createElement("h2");
+  var heading = document.createElement('h2');
   heading.innerHTML = name + ' <span class="version">' + version + '</span>';
   return heading;
 }
 
 function app_description(description, icon_url) {
-  var logo = document.createElement("img");
+  var logo = document.createElement('img');
   logo.setAttribute('src', icon_url);
   logo.setAttribute('alt', '');
-  var logo_cell = document.createElement("td");
+  var logo_cell = document.createElement('td');
   logo_cell.appendChild(logo);
   var description_text = document.createTextNode(description);
-  var description_cell = document.createElement("td");
+  var description_cell = document.createElement('td');
   description_cell.appendChild(description_text);
-  var row = document.createElement("tr");
+  var row = document.createElement('tr');
   row.appendChild(description_cell);
   row.appendChild(logo_cell);
-  var table = document.createElement("table");
+  var table = document.createElement('table');
   table.setAttribute('class', 'description');
   table.appendChild(row);
   return table;
@@ -120,7 +120,7 @@ function render_app(app) {
   var host_permissions = permission_view(app.hostPermissions, 'Host Permissions', '');
   var bar = option_bar(app);
   var classes = app_classes(app.enabled);
-  var element = document.createElement("section");
+  var element = document.createElement('section');
   element.setAttribute('class', classes);
   var element_id = app_element_id(app.id)
   element.setAttribute('id', element_id);
@@ -136,7 +136,7 @@ function render_app(app) {
 function enable_toggle(id) {
   var enable = enable_link(id);
   var disable = disable_link(id);
-  var toggle = document.createElement("span");
+  var toggle = document.createElement('span');
   toggle.appendChild(enable)
   toggle.appendChild(disable)
   return toggle;
@@ -147,7 +147,7 @@ function option_bar(app) {
   var uninstall = uninstall_link(id);
   var toggle = enable_toggle(id);
   var store = store_link(id);
-  var bar = document.createElement("p");
+  var bar = document.createElement('p');
   bar.setAttribute('class', 'bottombar');
   bar.appendChild(uninstall);
   bar.appendChild(toggle);
@@ -195,9 +195,9 @@ function add_elements(target, items) {
 
 function main_section(apps) {
   var heading_text = document.createTextNode('Permission Viewer');
-  var heading = document.createElement("h1");
+  var heading = document.createElement('h1');
   heading.appendChild(heading_text);
-  var main_section = document.createElement("section");
+  var main_section = document.createElement('section');
   main_section.setAttribute('id', 'main');
   main_section.appendChild(heading);
   var ordered = order_apps_by_infos(apps);
