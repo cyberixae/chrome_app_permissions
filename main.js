@@ -37,54 +37,70 @@ function store_link(id) {
   return store_link;
 }
 
-function render_app(app) {
-  var id = app.id;
-  var name = app.name;
-  var warnings = app.warnings;
-  var permissions = app.permissions;
-  var hostPermissions = app.hostPermissions;
-  var logo = '<img src="' + app.icon + '" width="48" style="float: right;" />';
-  var h_name = '<h2>' + name + ' <span class="version">' + app.version + '</span></h2>';
-  var p_desc = '<table class="description"><tr><td>' + app.description + '</td><td>' + logo + '</td></tr></table>';
-  var ul_war = render_list(warnings, 'color: #a00;');
+function permission_view(warnings, heading, class_name) {
+  var ul_war = render_list(warnings, '');
   if (ul_war == '') {
-    var war = '';
+    var empty = document.createTextNode('');
+    return empty;
   } else {
-    var war = '<p class="itcan">It can:</p>' + ul_war;
+    var war = document.createElement("div");
+    war.setAttribute('class', class_name);
+    war.innerHTML = '<p class="list_head">' + heading + ':</p>' + ul_war;
+    return war;
   }
-  var ul_per = render_list(permissions, '');
-  if (ul_per == '') {
-    var per = '';
-  } else {
-    var per = '<h3>Permissions:</h3>' + ul_per;
-  }
-  var ul_hper = render_list(hostPermissions, '')
-  if (ul_hper == '') {
-    var hper = '';
-  } else {
-    var hper = '<h3>Host Permissions:</h3>' + ul_hper;
-  }
+}
 
-  var store = store_link(id);
-  var uninstall = uninstall_link(id);
+function app_heading(name, version) {
+  var heading = document.createElement("h2");
+  heading.innerHTML = name + ' <span class="version">' + version + '</span>';
+  return heading;
+}
 
-  var bbar = document.createElement("p");
-  bbar.setAttribute('class', 'bottombar');
-  bbar.appendChild(uninstall);
-  bbar.appendChild(store);
+function app_description(description, icon_url) {
+  var table = document.createElement("table");
+  table.setAttribute('class', 'description');
+  var logo = '<img src="' + icon_url + '" width="48" style="float: right;" />';
+  table.innerHTML = '<tr><td>' + description + '</td><td>' + logo + '</td></tr>';
+  return table;
+}
 
-  var sec_app = document.createElement("section");
+function app_classes(app) {
   if (app.enabled) {
     var classes = 'app enabled';
   } else {
     var classes = 'app';
   }
-  sec_app.setAttribute('class', classes);
-  sec_app.setAttribute('id', 'app-' + id);
-  sec_app.innerHTML = h_name + p_desc + war + per + hper;
-  sec_app.appendChild(bbar);
+  return classes;
+}
 
-  return sec_app;
+function render_app(app) {
+  var heading = app_heading(app.name, app.version);
+  var description = app_description(app.description, app.icon);
+  var warnings = permission_view(app.warnings, 'It can', 'itcan');
+  var permissions = permission_view(app.permissions, 'Permissions', '');
+  var host_permissions = permission_view(app.hostPermissions, 'Host Permissions', '');
+  var bar = option_bar(app.id);
+  var classes = app_classes(app);
+  var element = document.createElement("section");
+  element.setAttribute('class', classes);
+  element.setAttribute('id', 'app-' + app.id);
+  element.appendChild(heading);
+  element.appendChild(description);
+  element.appendChild(warnings);
+  element.appendChild(permissions);
+  element.appendChild(host_permissions);
+  element.appendChild(bar);
+  return element;
+}
+
+function option_bar(id) {
+  var store = store_link(id);
+  var uninstall = uninstall_link(id);
+  var bar = document.createElement("p");
+  bar.setAttribute('class', 'bottombar');
+  bar.appendChild(uninstall);
+  bar.appendChild(store);
+  return bar;
 }
 
 function render_apps(apps) {
