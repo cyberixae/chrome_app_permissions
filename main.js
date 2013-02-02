@@ -8,15 +8,6 @@ function render_list(items, style) {
 }
 
 
-function remove(id) {
-  var obsolete = document.getElementById('app-' + id);
-  if (typeof(obsolete) == typeof(undefined)) {
-    return;
-  }
-  obsolete.parentNode.removeChild(obsolete);
-
-}
-
 function get_delete_cb(id) {
   return function(event) {
     try {
@@ -223,13 +214,21 @@ function update_app_data(infos) {
   collect_app_data(app_infos, apps, continuation);
 }
 
-function refresh() {
+function remove_app_element(id) {
+  var obsolete = document.getElementById('app-' + id);
+  if (typeof(obsolete) == typeof(undefined)) {
+    return;
+  }
+  obsolete.parentNode.removeChild(obsolete);
+}
+
+function refresh_page() {
   chrome.management.getAll(update_app_data)
 }
 
 window.onload = function() {
-  chrome.management.onUninstalled.addListener(remove);
-  chrome.management.onInstalled.addListener(refresh);
-  refresh();
+  chrome.management.onUninstalled.addListener(remove_app_element);
+  chrome.management.onInstalled.addListener(refresh_page);
+  refresh_page();
 }
 
