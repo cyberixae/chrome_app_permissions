@@ -6,6 +6,17 @@ function render_list(items, style) {
   return '';
 }
 
+function get_delete_cb(id) {
+  return function(event) {
+    try {
+    chrome.management.uninstall(id, {"showConfirmDialog": true});
+    } catch(e) {
+      console.log(e);
+    }
+    event.preventDefault();
+  }
+}
+
 function render(apps) {
   var h_apps = [];
   for(var i in apps) {
@@ -36,14 +47,29 @@ function render(apps) {
     } else {
       var hper = '<h3>Host Permissions:</h3>' + ul_hper;
     }
+    var store_text = document.createTextNode('Show Web Store page');
     var store_url = 'https://chrome.google.com/webstore/detail/' + id;
-    var store_link = '<a href="' + store_url + '">Show Web Store page</a>'
-    var uninstall_link = '<a id="123" href="">Uninstall</a>'
-    var bbar = '<p class="bottombar"><span style="float: left;">' + uninstall_link +' ' + store_link + '</span> application ID: ' + app.id + '</p>';
+    var store_link = document.createElement('a');
+    store_link.setAttribute('href', store_url);
+    store_link.appendChild(store_text);
 
+    var link_text = document.createTextNode('Uninstall');
+    var uninstall_link = document.createElement('a');
+    uninstall_link.setAttribute('href', '#');
+    uninstall_link.appendChild(link_text);
+
+    var bbar = document.createElement("p");
+    bbar.setAttribute('class', 'bottombar');
+    bbar.appendChild(uninstall_link);
+    bbar.appendChild(store_link);
+    var id_text = document.createTextNode(' application ID: ' + app.id);
+    bbar.appendChild(id_text);
+
+    uninstall_link.addEventListener('click', get_delete_cb(id));
     var sec_app = document.createElement("section");
     sec_app.setAttribute('class', 'app');
-    sec_app.innerHTML = h_name + p_desc + war + per + hper + bbar
+    sec_app.innerHTML = h_name + p_desc + war + per + hper;
+    sec_app.appendChild(bbar);
     h_apps.push(sec_app);
   }
   return h_apps;
@@ -140,10 +166,10 @@ function load_warnings(ids, complete, i) {
 }
 
 function infos(result) {
-  function foo() {
+  function continuation() {
     warnings_loaded(result);
   }
-  load_warnings(result, foo);
+  load_warnings(result, continuation);
 }
 window.onload = function() {
   chrome.management.getAll(infos)
