@@ -63,7 +63,10 @@ function render(apps) {
     bbar.appendChild(uninstall_link);
     bbar.appendChild(store_link);
     var id_text = document.createTextNode(' application ID: ' + app.id);
-    bbar.appendChild(id_text);
+    var id_field = document.createElement("span");
+    id_field.setAttribute('class', 'idfield');
+    id_field.appendChild(id_text);
+    bbar.appendChild(id_field);
 
     uninstall_link.addEventListener('click', get_delete_cb(id));
     var sec_app = document.createElement("section");
