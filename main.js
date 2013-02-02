@@ -2,11 +2,21 @@
 
 function get_delete_cb(id) {
   return function(event) {
-    try {
     chrome.management.uninstall(id, {"showConfirmDialog": true});
-    } catch(e) {
-      console.log(e);
-    }
+    event.preventDefault();
+  }
+}
+
+function get_disable_cb(id) {
+  return function(event) {
+    chrome.management.setEnabled(id, false);
+    event.preventDefault();
+  }
+}
+
+function get_enable_cb(id) {
+  return function(event) {
+    chrome.management.setEnabled(id, true);
     event.preventDefault();
   }
 }
@@ -20,11 +30,31 @@ function render_list(items, style) {
 
 function uninstall_link(id) {
     var link_text = document.createTextNode('Uninstall');
-    var uninstall_link = document.createElement('a');
-    uninstall_link.setAttribute('href', '#');
-    uninstall_link.appendChild(link_text);
-    uninstall_link.addEventListener('click', get_delete_cb(id));
-    return uninstall_link;
+    var link = document.createElement('a');
+    link.setAttribute('href', '#');
+    link.appendChild(link_text);
+    link.addEventListener('click', get_delete_cb(id));
+    return link;
+}
+
+function enable_link(id) {
+    var link_text = document.createTextNode('Enable');
+    var link = document.createElement('a');
+    link.setAttribute('class', 'enable');
+    link.setAttribute('href', '#');
+    link.appendChild(link_text);
+    link.addEventListener('click', get_enable_cb(id));
+    return link;
+}
+
+function disable_link(id) {
+    var link_text = document.createTextNode('Disable');
+    var link = document.createElement('a');
+    link.setAttribute('class', 'disable');
+    link.setAttribute('href', '#');
+    link.appendChild(link_text);
+    link.addEventListener('click', get_disable_cb(id));
+    return link;
 }
 
 function store_link(id) {
@@ -78,7 +108,7 @@ function render_app(app) {
   var warnings = permission_view(app.warnings, 'It can', 'itcan');
   var permissions = permission_view(app.permissions, 'Permissions', '');
   var host_permissions = permission_view(app.hostPermissions, 'Host Permissions', '');
-  var bar = option_bar(app.id);
+  var bar = option_bar(app);
   var classes = app_classes(app);
   var element = document.createElement("section");
   element.setAttribute('class', classes);
@@ -92,12 +122,19 @@ function render_app(app) {
   return element;
 }
 
-function option_bar(id) {
+function option_bar(app) {
+  var id = app.id;
   var store = store_link(id);
   var uninstall = uninstall_link(id);
+  if (app.enabled) {
+    var enable_disable = disable_link(id);
+  } else {
+    var enable_disable = enable_link(id);
+  }
   var bar = document.createElement("p");
   bar.setAttribute('class', 'bottombar');
   bar.appendChild(uninstall);
+  bar.appendChild(enable_disable);
   bar.appendChild(store);
   return bar;
 }
