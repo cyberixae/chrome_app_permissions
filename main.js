@@ -21,13 +21,6 @@ function get_enable_cb(id) {
   }
 }
 
-function render_list(items, style) {
-  if (items.length > 0) {
-    return '<ul style="' + style + '"><li>' + items.join('</li><li>') + '</li></ul>';
-  }
-  return '';
-}
-
 function uninstall_link(id) {
     var link_text = document.createTextNode('Uninstall');
     var link = document.createElement('a');
@@ -66,17 +59,27 @@ function store_link(id) {
   return store_link;
 }
 
-function permission_view(warnings, heading, class_name) {
-  var ul_war = render_list(warnings, '');
-  if (ul_war == '') {
+function render_list(items) {
+  var ul = document.createElement('ul');
+  ul.innerHTML = '<li>' + items.join('</li><li>') + '</li>';
+  return ul;
+}
+
+function permission_view(items, heading, class_name) {
+  if (items.length < 1) {
     var empty = document.createTextNode('');
     return empty;
-  } else {
-    var war = document.createElement('div');
-    war.setAttribute('class', class_name);
-    war.innerHTML = '<p class="list_head">' + heading + ':</p>' + ul_war;
-    return war;
   }
+  var heading_text = document.createTextNode(heading + ':');
+  var head = document.createElement('p');
+  head.setAttribute('class', 'list_head');
+  head.appendChild(heading_text);
+  var ul = render_list(items);
+  var view = document.createElement('div');
+  view.setAttribute('class', class_name);
+  view.appendChild(head);
+  view.appendChild(ul);
+  return view;
 }
 
 function app_heading(name, version) {
