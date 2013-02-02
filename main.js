@@ -80,8 +80,16 @@ function permission_view(warnings, heading, class_name) {
 }
 
 function app_heading(name, version) {
+  var version_text = document.createTextNode(version);
+  var span = document.createElement('span');
+  span.setAttribute('class', 'version');
+  span.appendChild(version_text);
+  var heading_text = document.createTextNode(name);
   var heading = document.createElement('h2');
-  heading.innerHTML = name + ' <span class="version">' + version + '</span>';
+  var space = document.createTextNode(' ');
+  heading.appendChild(heading_text);
+  heading.appendChild(space);
+  heading.appendChild(span);
   return heading;
 }
 
