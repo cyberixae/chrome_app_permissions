@@ -1,13 +1,5 @@
 "use strict";
 
-function render_list(items, style) {
-  if (items.length > 0) {
-    return '<ul style="' + style + '"><li>' + items.join('</li><li>') + '</li></ul>';
-  }
-  return '';
-}
-
-
 function get_delete_cb(id) {
   return function(event) {
     try {
@@ -17,6 +9,13 @@ function get_delete_cb(id) {
     }
     event.preventDefault();
   }
+}
+
+function render_list(items, style) {
+  if (items.length > 0) {
+    return '<ul style="' + style + '"><li>' + items.join('</li><li>') + '</li></ul>';
+  }
+  return '';
 }
 
 function uninstall_link(id) {
