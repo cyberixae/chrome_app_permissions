@@ -3,7 +3,7 @@
 
   "name": "Permission Viewer",
   "description": "Review permissions of installed apps and extensions.",
-  "version": "1.0",
+  "version": "1.1",
   "app": {
     "launch": {
       "local_path": "main.html"
