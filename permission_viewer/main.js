@@ -55,6 +55,7 @@ function store_link(id) {
   var store_url = 'https://chrome.google.com/webstore/detail/' + id;
   var store_link = document.createElement('a');
   store_link.setAttribute('href', store_url);
+  store_link.setAttribute('target', '_blank');
   store_link.appendChild(store_text);
   return store_link;
 }
