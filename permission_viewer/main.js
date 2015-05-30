@@ -214,9 +214,14 @@ function main_section(apps) {
   var heading_text = document.createTextNode('Permission Viewer');
   var heading = document.createElement('h1');
   heading.appendChild(heading_text);
+  var introduction_text = document.createTextNode('The following permissions have been granted to Chrome apps and extensions on your system.');
+  var introduction = document.createElement('p');
+  introduction.appendChild(introduction_text);
+  introduction.setAttribute('class', 'introduction');
   var main_section = document.createElement('section');
   main_section.setAttribute('id', 'main');
   main_section.appendChild(heading);
+  main_section.appendChild(introduction);
   var ordered = order_apps_by_infos(apps);
   var rendered = render_apps(ordered)
   add_elements(main_section, rendered);

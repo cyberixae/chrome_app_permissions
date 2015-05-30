@@ -16,6 +16,10 @@ h1 {
 	font-weight: normal;
 }
 
+p.introduction {
+	text-align: center;
+}
+
 p.bottombar {
 	clear: both;
 	text-align: left;
